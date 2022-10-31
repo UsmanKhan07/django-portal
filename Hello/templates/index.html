@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock title %}
+
+  
+{% block body %}
+
+<head>
+  <title>Machine Learning 1 </title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+  body {font-family: "Lato", sans-serif}
+  .mySlides {display: none}
+  .ok{background-color:LightGray;
+    padding-top: 10px;
+    padding-right: 30px;
+    padding-bottom: 20px;
+    padding-left: 30px;
+    border-style: groove;
+  }
+
+  
+
+#flex{
+  width: 50%;
+  float: left;
+  padding: 50px;
+  }
+
+
+
+  .button{
+    color: black;
+    border: 2px solid #555555;
+    padding: 10px 22px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 12px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .button:hover {
+    background-color: #555555;
+    color: white;
+  }
+  
+  </style>
+  </head>
+
+<body style="background-color:powderblue;">
+
+<!-- Navbar -->
+
+
+<!-- Navbar on small screens (remove the onclick attribute if you want the navbar to always show on top of the content when clicking on the links) -->
+<div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
+  <a href="#contact" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">CONTACT</a>
+  <a href="#" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">MERCH</a>
+</div>
+
+
+  <!-- The Band Section -->
+ <div class="w3-container w3-content w3-center w3-padding-16" style="max-width:800px" id="band">
+    <h2 class="w3-wide"><b>Python Evalution Test</b></h2>
+	<div class="ok">
+    <p class="w3-justify"> {{variable}} </p>
+     	</div><br><br>
+    </div>
+      <div class="container">
+        <form method="POST" action="/">
+        {% csrf_token %}
+          <label for="answer">Answer</label><br>
+        <textarea id="flex" class="answer" name="answer" rows="12" cols="93" placeholder="Paste your code Here Funtion name should be Solution(..)">
+        </textarea><br><br>
+        <p id="flex">{{blow}} answer is</p>
+      </div>
+<br>
+<div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px" id="band">
+
+  <br>
+<button class="button">Verify</button>
+<button class="button" type="submit">Submit</button>
+<button class="button"  method="POST">Next</button>
+</form>
+<!---<p>{{blow}} answer is</p>-->
+ </div>
+
+
+
+
+
+
+</body>
+
+
+{% endblock body %}
