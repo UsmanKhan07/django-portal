@@ -63,13 +63,22 @@ def index(request):
             if k!="obtained_score":
                 r_dict["Test Case"] += [k]
                 r_dict["Input"] += [v.get("input","N/A")]
-                r_dict["Expected Output"] += [v.get("output","N/A")]
+                r_dict["Expected Output"] += [v.get("expected_output","N/A")]
                 r_dict["Output"] += [v.get("output","N/A")]
                 r_dict["Status"] += [v.get("status","N/A")]
                 r_dict["Score"] += [v.get("score","N/A")]
+        r_dict["Test Case"] += ["Total Score"]
+        r_dict["Input"] += [""]
+        r_dict["Expected Output"] += [""]
+        r_dict["Output"] += [""]
+        r_dict["Status"] += [""]
+        r_dict["Score"] += [r.get("obtained_score","N/A")]
         df = pd.DataFrame.from_dict(r_dict)
-        
-        return HTML(df.to_html(classes='table table-stripped'))
+        """mydict = {
+        "df": df.to_html()
+        }"""
+        #return mydict
+        return df.to_html(classes='table table-stripped')
 
 
 
