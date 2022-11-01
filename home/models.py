@@ -1,4 +1,3 @@
-from asyncio.windows_events import NULL
 from multiprocessing.connection import answer_challenge
 from django.db import models
 
@@ -19,10 +18,7 @@ class Contact(models.Model):
     #date = models.DateField()
 
     def __str__(self):
-        if self.email==NULL:
-            self.email="email not provided by this person"
-            return self.email
-        elif self.email=="":
+        if not self.email:
             self.email="email not provided by this person"
             return self.email
         else:
