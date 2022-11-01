@@ -103,7 +103,7 @@ score = int(arg.score)
 groundtruths = json.loads(arg.groundtruths)
 
 
-
+obt_marks = 0
 mod = ModuleType('my_module', 'doc string here')
 sys.modules['my_module'] = mod
 valid_to_submit_flag, valid_to_submit_message = check_valid_submission(answer)
@@ -112,11 +112,15 @@ if valid_to_submit_flag:
         exec(answer, mod.__dict__)
         sys.modules['my_module'] = mod
     except:
+        valid_to_submit_flag = False
         exec("def solution():\n    return n", mod.__dict__)
     r1=evaluate_solution(mod.solution, groundtruths, score)
     blow=disp(r1)
+    obt_marks = r1.get("obtained_score",0)
 else:
     df = pd.DataFrame.from_dict({"Error":[valid_to_submit_message]})
     blow = df.to_html(classes='table table-stripped')
 
-print(blow)
+
+r=(valid_to_submit_flag,blow, obt_marks)
+print(json.dumps(r))

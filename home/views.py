@@ -24,8 +24,10 @@ def validate(text):
         ],
         stdout= subprocess.PIPE
     )
-    return results.communicate()[0].strip().decode()
+    return json.loads(results.communicate()[0].strip().decode())
 
+t_id = 1
+q_id = 1
 problem_statement = "Write a code for Usman Khan ;-)"
 score = 100
 test= {
@@ -50,11 +52,15 @@ test= {
 def index(request):
     blow = ""
     if request.method == "POST":
+        email = request.POST.get('email')
         answer = request.POST.get('answer')
-        blow = validate(answer)
-        contact = Contact( answer=answer)
-        contact.save()
-        messages.success(request, 'Your solution has been sent!')
+        blow_flag, blow, obt_marks = validate(answer)
+        if blow_flag:
+            contact = Contact(email=email,solution=answer, t_id=t_id, q_id=q_id, obtained_marks=obt_marks, total_marks=score)
+            contact.save()
+            messages.success(request, 'Your solution has been sent!')
+        else:
+            messages.error(request, 'Not Submitted! Remove errors from your code!')
     context = {
         "variable":problem_statement,
         #"variable1":"Rohan is great",
