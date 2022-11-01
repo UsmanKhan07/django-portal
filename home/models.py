@@ -13,14 +13,24 @@ class Contact(models.Model):
     obtained_marks = models.FloatField()
     total_marks = models.FloatField()
     email = models.CharField(max_length=122)
-    #phone = models.CharField(max_length=12)
     solution = models.TextField()
-    #date = models.DateField()
-
     def __str__(self):
-        if not self.email:
-            self.email="email not provided by this person"
-            return self.email
-        else:
-            return self.email
+        return self.email+"_"+str(self.t_id)+"_"+str(self.q_id)
+
+class Questions(models.Model):
+    t_id = models.TextField()
+    q_id = models.IntegerField()
+    statement = models.TextField()
+    groundtruths = models.TextField()
+    score = models.FloatField()
+    def __str__(self):
+        return str(self.t_id)+"_"+str(self.q_id)
+    
+
+class Test(models.Model):
+    t_id = models.TextField()
+    is_open = models.BooleanField()
+    def __str__(self):
+        return str(self.t_id)
+    
     

@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock title %}
+
+  
+{% block body %}
+
+<head>
+  <title>Machine Learning 1 </title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+  body {font-family: "Lato", sans-serif}
+  .mySlides {display: none}
+  .ok{background-color:LightGray;
+    padding-top: 10px;
+    padding-right: 30px;
+    padding-bottom: 20px;
+    padding-left: 30px;
+    border-style: groove;
+  }
+
+  
+
+#flex{
+  width: 50%;
+  float: left;
+  padding: 50px;
+  }
+
+
+
+  .button{
+    color: black;
+    border: 2px solid #555555;
+    padding: 10px 22px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 12px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .button:hover {
+    background-color: #555555;
+    color: white;
+  }
+  
+  </style>
+  </head>
+
+<body style="background-color:powderblue;">
+
+<!-- Navbar -->
+
+
+<!-- Navbar on small screens (remove the onclick attribute if you want the navbar to always show on top of the content when clicking on the links) -->
+<div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
+  <a href="#contact" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">CONTACT</a>
+  <a href="#" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">MERCH</a>
+</div>
+
+
+<!-- The Band Section -->
+<div class="w3-container w3-center" style="max-width:800px" id="band">
+    <h2 class="w3-wide"><b>Add a New question</b></h2>
+	<div class="ok">
+    
+        <form method="POST" action="/services">
+        {% csrf_token %}
+            <p><label>Select Test: </label>
+            <select id="t_ids" class="t_ids" name="t_ids">
+                {% for i in t_ids %}
+                <option value="{{ i }}">{{ i }}</option>
+                {% endfor %}
+            </select></p>
+            <br><br><br>
+
+            <p><label for="statement">Problem Statement: </label>
+            <textarea class="statement" name="statement" rows="12" cols="93" placeholder="Paste Problem Statement here">
+            </textarea><br><br></p>
+
+            <p><label for="score">Maximun Score: </label><br>
+            <textarea class="score" name="score" rows="1" cols="25" placeholder="100">
+            </textarea><br><br></p>
+
+            <p><label for="testcases">Test Cases: </label>
+            <textarea class="testcases" name="testcases" rows="12" cols="93" placeholder="Test Cases (json dumps)">
+            </textarea><br><br></p>
+            </div><br><br>
+
+        <button class="button" type="submit">Submit</button>
+        </form>
+    </div><br><br>
+</div>
+
+
+
+
+
+</body>
+
+
+{% endblock body %}
