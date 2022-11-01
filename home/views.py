@@ -14,7 +14,8 @@ def validate(text):
     results = subprocess.Popen(
         [
             "python",
-            "home/validate_solution.py",
+            "home/validate_solution.py", # for linux / mac
+            # "home/validate_solution_w.py", # for windows (less functionality)
             "--solution",
             text,
             "--score",
