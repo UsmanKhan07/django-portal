@@ -1,11 +1,51 @@
 import sys
 import argparse
 import json
+import subprocess
 import pandas as pd
 from types import ModuleType
 
-def handle_timeout(signum, frame):
-    raise TimeoutError
+
+
+def run(text, input_value):
+    try:
+        results = subprocess.Popen(
+            [
+                "python",
+                "home/run_sol.py",
+                "--solution",
+                text,
+                "--input",
+                json.dumps(input_value)
+            ],
+            stdout= subprocess.PIPE
+        )
+        p = results.communicate()[0].strip().decode()
+        if p=="false":
+            return False
+        if p=="true":
+            return True
+        if p!="":
+            try:
+                p=eval(p)
+            except:
+                pass
+            if p=="false":
+                return False
+            if p=="true":
+                return true
+            try:
+                try:
+                    return json.loads(json.loads(json.loads(p)))
+                except Exception as e2:
+                    return json.loads(json.loads(p))
+            except Exception as e1:
+                return p
+        else:
+            return "Time Out"
+    except Exception as r_e:
+        return "Error"
+
 
 
 def check_valid_submission(text):
@@ -21,7 +61,7 @@ def check_valid_submission(text):
     return True, ""
 
 
-def evaluate_solution(func, groundtruths_dict, score):
+def evaluate_solution(text, groundtruths_dict, score):
     score_per_unit = score/sum([v.get("score_points",1) for k,v in groundtruths_dict.items()])
     results = {}
     results["obtained_score"] = 0
@@ -30,11 +70,17 @@ def evaluate_solution(func, groundtruths_dict, score):
         s = score_per_unit*v.get("score_points",1)
         out=""
         try:
-            out = func(v["input"])
-            if out==v["output"]:
+            out = run(text, json.dumps(v["input"]))
+            if out=="Time Out":
+                results[k]["status"] = "Time Out"
+                results[k]["score"] = "0/"+str(round(s,2))
+            elif out==v["output"]:
                 results[k]["status"] = "Passed"
                 results[k]["score"] = str(round(s,2))+"/"+str(round(s,2))
                 results["obtained_score"] += s
+            elif out=="Error":
+                results[k]["status"] = "Error"
+                results[k]["score"] = "0/"+str(round(s,2))
             else:
                 results[k]["status"] = "Failed"
                 results[k]["score"] = "0/"+str(round(s,2))
@@ -89,7 +135,7 @@ parser.add_argument('--groundtruths', type=str)
 
 arg = parser.parse_args()
 answer = arg.solution
-score = int(arg.score)
+score = float(arg.score)
 groundtruths = json.loads(arg.groundtruths)
 
 
@@ -103,8 +149,8 @@ if valid_to_submit_flag:
         sys.modules['my_module'] = mod
     except:
         valid_to_submit_flag = False
-        exec("def solution():\n    return n", mod.__dict__)
-    r1=evaluate_solution(mod.solution, groundtruths, score)
+        text = "def solution():\n    return n"
+    r1=evaluate_solution(answer, groundtruths, score)
     blow=disp(r1)
     obt_marks = r1.get("obtained_score",0)
 else:

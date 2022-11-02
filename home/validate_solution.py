@@ -99,7 +99,7 @@ parser.add_argument('--groundtruths', type=str)
 
 arg = parser.parse_args()
 answer = arg.solution
-score = int(arg.score)
+score = float(arg.score)
 groundtruths = json.loads(arg.groundtruths)
 
 

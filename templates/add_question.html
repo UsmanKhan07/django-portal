@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}Home{% endblock title %}
+{% block title %}Add Question{% endblock title %}
 
   
 {% block body %}
 
 <head>
-  <title>Machine Learning 1 </title>
+  <title>Add Question - Machine Learning 1 Test Portal</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -82,16 +82,20 @@
             </select></p>
             <br><br><br>
 
+            <p><label for="score">Score: </label><br>
+            <textarea class="score" name="score" rows="1" cols="25" placeholder="100">
+            </textarea><br><br></p>
+
             <p><label for="statement">Problem Statement: </label>
             <textarea class="statement" name="statement" rows="12" cols="93" placeholder="Paste Problem Statement here">
             </textarea><br><br></p>
 
-            <p><label for="score">Maximun Score: </label><br>
-            <textarea class="score" name="score" rows="1" cols="25" placeholder="100">
+            <p><label for="statement">Solution: </label>
+            <textarea class="solution" name="solution" rows="12" cols="93" placeholder="Paste Solution for this problem">
             </textarea><br><br></p>
 
             <p><label for="testcases">Test Cases: </label>
-            <textarea class="testcases" name="testcases" rows="12" cols="93" placeholder="Test Cases (json dumps)">
+            <textarea class="testcases" name="testcases" rows="12" cols="93" placeholder="Test Cases after json.dumps()">
             </textarea><br><br></p>
             </div><br><br>
 

@@ -5,9 +5,7 @@ from django.db import models
 # migrate - apply the pending changes created by makemigrations
 
 # Create your models here.
-class Contact(models.Model):
-    #name = models.CharField(max_length=122)
-
+class Results(models.Model):
     t_id = models.TextField()
     q_id = models.IntegerField()
     obtained_marks = models.FloatField()
@@ -22,6 +20,7 @@ class Questions(models.Model):
     q_id = models.IntegerField()
     statement = models.TextField()
     groundtruths = models.TextField()
+    solution = models.TextField()
     score = models.FloatField()
     def __str__(self):
         return str(self.t_id)+"_"+str(self.q_id)
