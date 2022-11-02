@@ -31,45 +31,48 @@ def validate(text, test, score):
     return json.loads(results.communicate()[0].strip().decode())
 
 count=0
-
 def index(request):
     global count
+    q_id = count
     t_id = "demo1"
     questions = Questions.objects.all()
     available_questions = [q for q in questions if q.t_id==t_id]
-
-
-
-    page_n=request.GET.get('/',count)
-    count=count+1
-    if count>=len(available_questions):
-        count = len(available_questions)-1
-    p = Paginator(questions, 1)
-    try:
-        page = p.page(page_n)
-    except EmptyPage:
-        page = p.page(1)
-    print(page_n)
-    q = available_questions[page_n]
+    blow = ""
+    q = available_questions[count]
     q_id = q.q_id
     problem_statement = q.statement
     test = json.loads(q.groundtruths)
     score = q.score
-    solution = q.solution
-    blow = ""
+    # solution = q.solution
+    
     if request.method == "POST":
-        email = request.POST.get('email')
-        answer = request.POST.get('answer')
-        if Results.objects.filter(t_id=t_id, q_id=q_id, email=email):
-            messages.error(request, 'Not Submitted!\nSolution is already submitted for this question against this email id!')
-        else:
-            blow_flag, blow, obt_marks = validate(answer, test, score)  
-            if blow_flag:
-                r = Results(email=email,solution=answer, t_id=t_id, q_id=q_id, obtained_marks=obt_marks, total_marks=score)
-                r.save()
-                messages.success(request, 'Your solution has been sent!')
+        if "Submit" in request.POST or "Verify" in request.POST:
+            email = request.POST.get('email')
+            answer = request.POST.get('answer')
+            if Results.objects.filter(t_id=t_id, q_id=q_id, email=email):
+                messages.error(request, 'unsuccessful!\nSolution is already submitted for this question against this email id!')
             else:
-                messages.error(request, 'Not Submitted!\nRemove errors from your code!')
+                blow_flag, blow, obt_marks = validate(answer, test, score)  
+                if blow_flag:
+                    if "Submit" in request.POST:
+                        r = Results(email=email,solution=answer, t_id=t_id, q_id=q_id, obtained_marks=obt_marks, total_marks=score)
+                        r.save()
+                        messages.success(request, 'Your solution has been sent!')
+                    else:
+                        messages.success(request, 'Your solution has been Verified!')
+                else:
+                    messages.error(request, 'Unsuccessful!\nRemove errors from your code!')
+        if "Next" in request.POST:
+            count=count+1
+            if count>=len(available_questions):
+                count = len(available_questions)-1
+    
+    q = available_questions[count]
+    q_id = q.q_id
+    problem_statement = q.statement
+    test = json.loads(q.groundtruths)
+    score = q.score
+    # solution = q.solution
     context = {
         "variable":problem_statement,
         "no_of_qs": len(available_questions),
