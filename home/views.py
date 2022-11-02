@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.shortcuts import render, HttpResponse
 from IPython.display import HTML
 from IPython.display import display
+from django.core.paginator import Paginator,EmptyPage
 
 
 def validate(text, test, score):
@@ -29,13 +30,27 @@ def validate(text, test, score):
     )
     return json.loads(results.communicate()[0].strip().decode())
 
-
+count=0
 
 def index(request):
+    global count
     t_id = "demo1"
     questions = Questions.objects.all()
     available_questions = [q for q in questions if q.t_id==t_id]
-    q = available_questions[0]
+
+
+
+    page_n=request.GET.get('/',count)
+    count=count+1
+    if count>=len(available_questions):
+        count = len(available_questions)-1
+    p = Paginator(questions, 1)
+    try:
+        page = p.page(page_n)
+    except EmptyPage:
+        page = p.page(1)
+    print(page_n)
+    q = available_questions[page_n]
     q_id = q.q_id
     problem_statement = q.statement
     test = json.loads(q.groundtruths)

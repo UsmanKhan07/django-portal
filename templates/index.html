@@ -34,6 +34,8 @@
 
 
   .button{
+    
+    background-color:LightGray;
     color: black;
     border: 2px solid #555555;
     padding: 10px 22px;
@@ -51,6 +53,7 @@
     background-color: #555555;
     color: white;
   }
+  
   
   </style>
   </head>
@@ -73,7 +76,7 @@
     <h3 class="w3-wide"><b> Problem No. {{q_id}} out of {{no_of_qs}} </b></h3>
     <h4>Problem Statment</h4>
 	<div class="ok">
-    <p class="w3-justify"> {{variable}} </p>
+    <p class="w3-justify" style="white-space:pre-line;"> {{variable}} </p>
      	</div><br><br>
     </div>
       <div class="container">
@@ -94,7 +97,10 @@
   <br>
 <button class="button">Verify</button>
 <button class="button" type="submit">Submit</button>
-<button class="button"  method="POST">Next</button>
+</form>
+<form method='get' action='/'>
+  <!--<input type="submit" value="Next" name="Next"/>-->
+  <a href="/?page={{ page.next_page_number }}" class="button">Next</a>
 </form>
 <!--<p>{{blow}} answer is</p>-->
  </div>
