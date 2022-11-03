@@ -81,11 +81,22 @@
       <div class="container">
         <form method="POST" action="/">
         {% csrf_token %}
-        
+        <p style="white-space:pre-line;"><b><u>Instructions</u></b>
+          1. Paste your code below in solution.py (Text box).
+          2. solution.py may contain atleast one function with name solution with exactly one parameter. Example: solution(input_value)
+          3. print, input and import statemets are not allowed in solution.py
+          4. infinite loops and infinte nested recursions are not allowed in solution.py
+          5. Your solution will be tested on different test cases. A solution will be consider CORRECT if it passes all test cases.
+          6. To run test cases (test the correctness of your solution) press verify button. <u><b>Verify button will just run test cases,It will not submit the solution.</b></u>
+          7. To submit your solution use submit button. <u><b>You should verify your solution first, before subimitting your solution.</b></u>
+          8. You can't submit solution for same problem twice. So submit it after testing with verify button and finalizing your solution.
+          9. You may use Previous and Next buttons for previous and next problem. But remember, you can't submit an already submitted problem. You can submit only such problems, which you have skipped.
+          10.You can also submit your solution if all the test cases are not passing.
+        </p>
         <label for="email">Email ID</label><br>
-        <input  class="email" name="email" type="email" rows="1" cols="66" ><br><br>
-        <label for="answer">solution.py</label><br>
-        <textarea id="flex" class="answer" name="answer" rows="12" cols="93" placeholder="Paste your code Here Funtion name should be solution(..)"></textarea><br><br>
+        <input  class="email" name="email" type="email" rows="1" cols="66"  value={{defualt_email}} readonly><br><br>
+        <label for="answer" style="white-space:pre-line;">solution.py</label><br>
+        <textarea id="flex" class="answer" name="answer" rows="12" cols="93" placeholder="Paste your code Here Funtion name should be solution(..)" value={{defualt_text}}>{{defualt_text}}</textarea><br><br>
         <p id="flex">{{blow|safe}} </p>
         
       </div>
@@ -93,9 +104,10 @@
 <div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px" id="band">
 
   <br>
+<button class="button" type="submit" name="Previous" value={{pg_no}}>Previous</button>
 <button class="button" type="submit" name="Verify">Verify</button>
 <button class="button" type="submit" name="Submit">Submit</button>
-<button class="button" type="submit" name="Next">Next</button>
+<button class="button" type="submit" name="Next" value={{pg_no}}>Next</button>
   {% comment %} <a href="/?page={{ page.next_page_number }}" class="button" name="Next" type="submit">Next</a> {% endcomment %}
 </form>
 <!--<p>{{blow}} answer is</p>-->
