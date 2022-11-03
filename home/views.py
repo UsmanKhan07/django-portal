@@ -11,6 +11,7 @@ from django.shortcuts import render, HttpResponse,redirect
 from IPython.display import HTML
 from IPython.display import display
 from django.core.paginator import Paginator,EmptyPage
+from django.http import Http404
 
 
 
@@ -32,7 +33,9 @@ def validate(text, test, score):
     return json.loads(results.communicate()[0].strip().decode())
 
 
-def index(request, defualt_email = "test@ml1.ai", t_id = "demo1"):
+def index(request, defualt_email="test@ml1.ai", t_id="demo1"):
+    if not request.META.get('HTTP_REFERER'):
+        raise Http404
     default_text = "def solution(input_value):\n    # your code here"
     questions = Questions.objects.all()
     available_questions = [q for q in questions if q.t_id==t_id]
@@ -134,6 +137,8 @@ def main(request):
         # return redirect(index)
         return redirect(index,defualt_email=email,t_id=t_id)
     return render(request, 'main.html', {"t_ids": available_t_ids})
+
+
 
 def contact(request):
     if request.method == "POST":
