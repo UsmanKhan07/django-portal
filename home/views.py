@@ -7,10 +7,11 @@ from home.models import Results
 from home.models import Questions
 from home.models import Test
 from django.contrib import messages
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse,redirect
 from IPython.display import HTML
 from IPython.display import display
 from django.core.paginator import Paginator,EmptyPage
+
 
 
 def validate(text, test, score):
@@ -31,9 +32,7 @@ def validate(text, test, score):
     return json.loads(results.communicate()[0].strip().decode())
 
 
-def index(request):
-    t_id = "demo1"
-    defualt_email = "test@ml1.ai"
+def index(request, defualt_email = "test@ml1.ai", t_id = "demo1"):
     default_text = "def solution(input_value):\n    # your code here"
     questions = Questions.objects.all()
     available_questions = [q for q in questions if q.t_id==t_id]
@@ -124,8 +123,17 @@ def services(request):
         except Exception as j_e:
             messages.error(request, 'There is issue in testcases. These should be after json.dumps() and this text should be valid for json.loads()',str(j_e))
     return render(request, 'add_question.html', {"t_ids": available_t_ids})
+ 
 
-
+def main(request):
+    tests = Test.objects.all()
+    available_t_ids = [t.t_id for t in tests if t.is_open]
+    if request.method == "POST":
+        t_id = request.POST.get('t_ids')
+        email = request.POST.get('email')
+        # return redirect(index)
+        return redirect(index,defualt_email=email,t_id=t_id)
+    return render(request, 'main.html', {"t_ids": available_t_ids})
 
 def contact(request):
     if request.method == "POST":
