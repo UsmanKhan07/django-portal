@@ -15,6 +15,18 @@ from django.http import Http404,HttpResponseRedirect
 from django.urls import reverse
 
 
+def download_df_as_csv(df,filename):
+    print("df1:",df)
+    response = HttpResponse(content_type='text/csv')
+    print("response1:",response)
+    # response['Content-Disposition'] = 'attachment; filename='+filename
+    response['Content-Disposition'] = 'attachment; filename=f.csv'
+    print("response2:",response)
+    print("2",df)
+    result =  df.to_csv(path_or_buf=response,sep=';',float_format='%.2f',index=False,decimal=",")
+    return result
+
+
 
 def validate(text, test, score):
     results = subprocess.Popen(
@@ -137,11 +149,89 @@ def main(request):
     tests = Test.objects.all()
     available_t_ids = [t.t_id for t in tests if t.is_open]
     if request.method == "POST":
-        t_id = request.GET.get('t_ids')
-        email = request.GET.get('email')
+        t_id = request.POST.get('t_ids')
+        email = request.POST.get('email')
         # return redirect(index)
         return redirect(index,defualt_email=email,t_id=t_id)
     return render(request, 'main.html', {"t_ids": available_t_ids})
+
+
+def reports(request):
+    if not request.user.is_authenticated:
+        raise Http404
+    tests = Test.objects.all()
+    questions = Questions.objects.all()
+    test_wise_questions = {t.t_id:[q for q in questions if q.t_id==t.t_id] for t in tests}
+    if request.method == "POST":
+        if "download_by_email" in request.POST or "view_by_email" in request.POST:
+            email = request.POST.get('email')
+            r_dict = {"test":[]}
+            max_qs = max([len(x) for x in test_wise_questions.values()])
+            r_dict.update({"q"+str(i+1):[] for i in range(max_qs)})
+            r_dict.update({"total":[]})
+            for t,qs in test_wise_questions.items():
+                r_dict["test"] += [t]
+                rs = [(Results.objects.filter(t_id=t, q_id=q_id+1, email=email).values(),qs[q_id].score if q_id<len(qs) else 0) for q_id in range(max_qs)]
+                rs = [(r[0]["obtained_marks"], s) if r else (0,s) for r,s in rs]
+                for i in range(max_qs):
+                    r_dict["q"+str(i+1)] += ["" if rs[i][1]==0 else str(rs[i][0])+"/"+str(rs[i][1])]
+                r_dict["total"] += [str(sum([x[0] for x in rs]))+"/"+str(sum([x[1] for x in rs]))]
+            df = pd.DataFrame.from_dict(r_dict)
+            if "download_by_email" in request.POST:
+                return download_df_as_csv(df, email+".csv")
+            else:
+                return render(
+                    request,
+                    'reports.html',
+                    {
+                        "t_ids":list(test_wise_questions),
+                        "df_table_e": df.to_html(classes='table table-stripped'),
+                        "df_table_t": ""
+                    }
+                )
+        if "download_by_testid" in request.POST or "view_by_testid" in request.POST:
+            t_id = request.POST.get('t_id')
+            qs = test_wise_questions[t_id]
+            results = Results.objects.filter(t_id=t_id).values()
+            email_wise_results = {}
+            for r in results:
+                email = r["email"]
+                if email not in email_wise_results:
+                    email_wise_results[email] = {"q"+str(i+1):[0,qs[i].score] for i in range(len(qs))}
+                    email_wise_results[email].update({"total":[0, sum([s[1] for s in email_wise_results[email].values()])]})
+                email_wise_results[email]["q"+str(r["q_id"])][0] = r["obtained_marks"]
+                email_wise_results[email]["total"][0] += r["obtained_marks"]
+            r_dict = {"email":[]}
+            r_dict.update({"q"+str(i+1):[] for i in range(len(qs))})
+            r_dict["total"] = []
+            for email,scores in email_wise_results.items():
+                r_dict["email"] += [email]
+                for s_k,s_v in scores.items():
+                    r_dict[s_k] += [str(s_v[0])+"/"+str(s_v[1])]
+            df = pd.DataFrame.from_dict(r_dict)
+            if "download_by_testid" in request.POST:
+                print("df0",df)
+                r = download_df_as_csv(df, t_id+".csv")
+                print(">>>>",r)
+                return r
+            else:
+                return render(
+                    request,
+                    'reports.html',
+                    {
+                        "t_ids":list(test_wise_questions),
+                        "df_table_e": "",
+                        "df_table_t": df.to_html(classes='table table-stripped')
+                    }
+                )
+    return render(
+        request,
+        'reports.html',
+        {"t_ids":list(test_wise_questions),
+         "df_table_t":"",
+         "df_table_e":""
+        }
+    )
 
 
 
