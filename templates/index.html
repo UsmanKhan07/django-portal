@@ -83,7 +83,7 @@
         {% csrf_token %}
         <p style="white-space:pre-line;"><b><u>Instructions</u></b>
           1. Paste your code below in solution.py (Text box).
-          2. solution.py may contain atleast one function with name solution with exactly one parameter. Example: solution(input_value)
+          2. solution.py may contain atleast one function with name solution with exactly one parameter. Example: solution(x)
           3. print, input and import statemets are not allowed in solution.py
           4. infinite loops and infinte nested recursions are not allowed in solution.py
           5. Your solution will be tested on different test cases. A solution will be consider CORRECT if it passes all test cases.
@@ -105,8 +105,8 @@
 
   <br>
 <button class="button" type="submit" name="Previous" value={{pg_no}}>Previous</button>
-<button class="button" type="submit" name="Verify">Verify</button>
-<button class="button" type="submit" name="Submit">Submit</button>
+<button class="button" type="submit" name="Verify" value={{pg_no}}>Verify</button>
+<button class="button" type="submit" name="Submit" value={{pg_no}}>Submit</button>
 <button class="button" type="submit" name="Next" value={{pg_no}}>Next</button>
   {% comment %} <a href="/?page={{ page.next_page_number }}" class="button" name="Next" type="submit">Next</a> {% endcomment %}
 </form>

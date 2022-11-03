@@ -76,7 +76,22 @@
     
         <form method="POST" action="/main">
         {% csrf_token %}
+            
         
+        <p align="left" style="white-space:pre-line;"><b><u>Instructions</u></b>
+          1. Paste your code below in solution.py (Text box).
+          2. solution.py may contain atleast one function with name solution with exactly one parameter. Example: solution(x)
+          3. print, input and import statemets are not allowed in solution.py
+          4. infinite loops and infinte nested recursions are not allowed in solution.py
+          5. Your solution will be tested on different test cases. A solution will be consider CORRECT if it passes all test cases.
+          6. To run test cases (test the correctness of your solution) press verify button. <u><b>Verify button will just run test cases,It will not submit the solution.</b></u>
+          7. To submit your solution use submit button. <u><b>You should verify your solution first, before subimitting your solution.</b></u>
+          8. You can't submit solution for same problem twice. So submit it after testing with verify button and finalizing your solution.
+          9. You may use Previous and Next buttons for previous and next problem. But remember, you can't submit an already submitted problem. You can submit only such problems, which you have skipped.
+          10.You can also submit your solution if all the test cases are not passing.
+        </p>
+
+        <br>
         
             <p><label for="email">Email ID</label><br>
             <input  class="email" name="email" type="email" rows="1" cols="66" ><br><br></p>
@@ -87,10 +102,9 @@
                 <option value="{{ i }}">{{ i }}</option>
                 {% endfor %}
             </select></p>
-            <br><br><br>
-
-
+            <br>
         <button class="button" type="submit">Start</button>
+        <br>
         </form>
     </div><br><br>
 </div>

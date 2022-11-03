@@ -16,15 +16,10 @@ from django.urls import reverse
 
 
 def download_df_as_csv(df,filename):
-    print("df1:",df)
     response = HttpResponse(content_type='text/csv')
-    print("response1:",response)
-    # response['Content-Disposition'] = 'attachment; filename='+filename
-    response['Content-Disposition'] = 'attachment; filename=f.csv'
-    print("response2:",response)
-    print("2",df)
-    result =  df.to_csv(path_or_buf=response,sep=';',float_format='%.2f',index=False,decimal=",")
-    return result
+    response['Content-Disposition'] = 'attachment; filename='+filename
+    df.to_csv(path_or_buf=response,sep=';',float_format='%.2f',index=False,decimal=",")
+    return response
 
 
 
@@ -49,7 +44,8 @@ def validate(text, test, score):
 def index(request, defualt_email="test@ml1.ai", t_id="demo1"):
     if not request.META.get('HTTP_REFERER'):
         raise Http404
-    default_text = "def solution(input_value):\n    # your code here"
+    
+    default_text = "def solution(x):\n    # your code here"
     questions = Questions.objects.all()
     available_questions = [q for q in questions if q.t_id==t_id]
     blow = ""
@@ -61,7 +57,15 @@ def index(request, defualt_email="test@ml1.ai", t_id="demo1"):
     score = q.score
     # solution = q.solution
     if request.method == "POST":
+        defualt_email = request.POST.get('email')
         if "Submit" in request.POST or "Verify" in request.POST:
+            pg_no = int(request.POST.get('Submit') if "Submit" in request.POST else request.POST.get('Verify'))
+            q = available_questions[pg_no]
+
+            q_id = q.q_id
+            problem_statement = q.statement
+            test = json.loads(q.groundtruths)
+            score = q.score
             email = request.POST.get('email')
             answer = request.POST.get('answer')
             if Results.objects.filter(t_id=t_id, q_id=q_id, email=email):
@@ -210,9 +214,7 @@ def reports(request):
                     r_dict[s_k] += [str(s_v[0])+"/"+str(s_v[1])]
             df = pd.DataFrame.from_dict(r_dict)
             if "download_by_testid" in request.POST:
-                print("df0",df)
                 r = download_df_as_csv(df, t_id+".csv")
-                print(">>>>",r)
                 return r
             else:
                 return render(
