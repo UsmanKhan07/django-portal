@@ -11,7 +11,8 @@ from django.shortcuts import render, HttpResponse,redirect
 from IPython.display import HTML
 from IPython.display import display
 from django.core.paginator import Paginator,EmptyPage
-from django.http import Http404
+from django.http import Http404,HttpResponseRedirect
+from django.urls import reverse
 
 
 
@@ -99,8 +100,12 @@ def about(request):
     return render(request, 'about.html') 
 
 def services(request):
+    if not request.user.is_authenticated:
+        raise Http404
+        return HttpResponseRedirect(reverse("admin"))
     tests = Test.objects.all()
     available_t_ids = [t.t_id for t in tests if t.is_open]
+
     if request.method == "POST":
         statement = request.POST.get('statement')
         answer = request.POST.get('solution')
@@ -132,8 +137,8 @@ def main(request):
     tests = Test.objects.all()
     available_t_ids = [t.t_id for t in tests if t.is_open]
     if request.method == "POST":
-        t_id = request.POST.get('t_ids')
-        email = request.POST.get('email')
+        t_id = request.GET.get('t_ids')
+        email = request.GET.get('email')
         # return redirect(index)
         return redirect(index,defualt_email=email,t_id=t_id)
     return render(request, 'main.html', {"t_ids": available_t_ids})
