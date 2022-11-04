@@ -182,6 +182,7 @@ def reports(request):
                 r_dict["total"] += [str(sum([x[0] for x in rs]))+"/"+str(sum([x[1] for x in rs]))]
             df = pd.DataFrame.from_dict(r_dict)
             if "download_by_email" in request.POST:
+                print(email)
                 return download_df_as_csv(df, email+".csv")
             else:
                 return render(
